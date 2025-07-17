@@ -1,0 +1,17 @@
+{
+    "name": "joaor/git-api",
+    "autoload": {
+        "psr-4": {
+            "Api\\": "Api/"
+        }
+    },
+    "authors": [
+        {
+            "name": "LacamJC",
+            "email": "joaoramajo744@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
