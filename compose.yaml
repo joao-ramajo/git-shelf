@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: 
+      context: ./backend 
+    working_dir: /var/www/backend
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/var/www/backend
+    ports:
+      - "8080:8080"
