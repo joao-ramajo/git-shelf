@@ -21,19 +21,21 @@ class MainController
         ];
         $context = stream_context_create($options);
         $response = file_get_contents("https://api.github.com/users/$name/repos?per_page=$perPage&page=$page", false, $context);
+        $total = count(json_decode(file_get_contents("https://api.github.com/users/$name/repos?per_page=200", false, $context), true));
         $data = json_decode($response, true);
 
         $page = (int) $page;
         $hasNextPage =  count(json_decode(file_get_contents("https://api.github.com/users/$name/repos?per_page=$perPage&page=" . $page++, false, $context), true)) > 0;
 
 
+
         $return = [
             'data' => $data,
             'hasNextPage' => $hasNextPage,
-            'page' => $page
+            'page' => $page,
+            'total_repositories' => $total
         ];
-        // var_dump($return);
-        // die();
+     
         return $return;
     }
 
