@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIT API</title>
+    <link href="./output.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body>
+    <main class="w-fulll h-screen flex justify-center items-center">
+        <section class="bg-stone-50 h-3/6 w-10/12  rounded">
+
+
+            <div class="bg-stone-400  flex justify-between items-center p-5">
+                <span>Github Insights</span>
+                <span>Sobre</span>
+            </div>
+
+
+            <div x-data="{}">
+
+                <div class="flex justify-between  my-5 px-5">
+                    <div class="flex gap-3">
+                        <input type="text" x-model="$store.gitInfo.name" @keydown.enter="$store.gitInfo.fetchRepo()"
+                            class="border border-b-emerald-950 px-3.5 py-1.5 rounded ">
+                        <button @click="$store.gitInfo.fetchRepo()"
+                            class="bg-green-400 rounded border border-green-800 text-white px-3.5 py-1.5">Procurar</button>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <p>
+                            <button class="bg-amber-500 border-amber-100 text-white px-3.5 py-1.5 rounded"
+                                @click="$store.gitInfo.lastPage()"
+                                x-show="($store.gitInfo.page > 1)">Voltar</button>
+                            <button class="bg-amber-500 border-amber-100 text-white px-3.5 py-1.5 rounded"
+                                @click="$store.gitInfo.nextPage()"
+                                x-show="$store.gitInfo.data.length > 0 && $store.gitInfo.page > 0">Próxima
+                                página</button>
+                        </p>
+                        <p
+                            class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset">
+                            Resultados encontrado: <span x-text="$store.gitInfo.data.length"></span></p>
+                    </div>
+                </div>
+
+                <table class="max-w-full bg-white border border-gray-300 rounded-md">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-2 px-4 border-b text-left">Repositorio</th>
+                            <th class="py-2 px-4 border-b text-left">Descrição</th>
+                            <th class="py-2 px-4 border-b text-left">Tecnologias</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(item) in $store.gitInfo.data">
+                            <tr>
+                                <td class="py-2 px-4 border-b" x-text="item.name"></td>
+                                <td class="py-2 px-4 border-b" x-text="item.description"></td>
+                                <td class="py-2 px-4 border-b" x-text="item.language""></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('gitInfo', {
+                name: '',
+                data: [],
+                hasNextPage: false,
+                page: 1,
+
+                fetchRepo() {
+                    var user = this.name
+                    if (!user) {
+                        console.log('nome vazio ou inválido')
+                        return
+                    }
+                    console.log(`Buscando informações de ${user}`);
+
+
+                    const url = `http://localhost:8080/?name=${encodeURI(user)}&action=json&page=${this.page}`;
+                    console.log(url)
+                    try {
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(data => {
+                                this.data = data.data
+                                console.log(data)
+                                if (data.hasNextPage) {
+                                    this.hasNextPage = true
+                                    console.log('tem proxima pagina')
+                                } else {
+                                    this.hasNextPage = false
+                                    console.log('nao tem proxima pagina')
+                                }
+                            })
+
+
+                    } catch (err) {
+                        console.log(err);
+                    }
+                },
+
+
+                nextPage() {
+
+                    if (this.hasNextPage) {
+                        this.page++
+                        console.log('buscando proxima página: ' + this.page)
+                        const url = `http://localhost:8080/?name=${encodeURI(this.name)}&action=json&page=${this.page}`;
+                        console.log(url)
+                        this.fetchRepo();
+                    }
+                },
+
+                lastPage() {
+                    if (this.page > 1) {
+                        this.page--;
+                        console.log('Voltando busca para a página: ' + this.page)
+                        const url = `http://localhost:8080/?name=${encodeURI(this.name)}&action=json&page=${this.page}`;
+                        console.log(url)
+                        this.fetchRepo();
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

@@ -1,21 +1,26 @@
 <?php
 
-require_once './vendor/autoload.php';
+require_once dirname(__DIR__, 1) . '/vendor/autoload.php';
 
 use Api\Controllers\MainController;
 use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 1));
 $dotenv->load();
 header('Content-Type: application/json');
 
 $controller = new MainController();
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
 
 $name = isset($_GET['name']) ? $_GET['name'] : '';
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $filters = isset($_GET['filters']) ? $_GET['filters'] : '';
 $language = isset($_GET['language']) ? $_GET['language'] : '';
+$page = isset($_GET['page']) ? $_GET['page'] : '';
 
 function convertToArray(string $filters)
 {
@@ -31,10 +36,10 @@ converttoArray($filters);
 
 switch ($action) {
     case 'json':
-        echo $controller->json($name, convertToArray($filters), $language);
+        echo $controller->json($name, convertToArray($filters), $language, $page);
         break;
     default:
-        echo "DEU EM NADA";
+        echo "";
         break;
 }
 

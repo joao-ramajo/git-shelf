@@ -2,14 +2,16 @@
 
 namespace Api\Controllers;
 
-
+use HashContext;
 
 class MainController
 {
-    public function request(string $name): ?array
+    public function request(string $name, string $page): ?array
     {
         $token = $_ENV['GITHUB_TOKEN'];
         $appName = $_ENV['APP_NAME'];
+
+        $perPage = 5;
 
         $options = [
             'http' => [
@@ -18,10 +20,21 @@ class MainController
             ]
         ];
         $context = stream_context_create($options);
-        $response = file_get_contents("https://api.github.com/users/$name/repos?per_page=100", false, $context);
+        $response = file_get_contents("https://api.github.com/users/$name/repos?per_page=$perPage&page=$page", false, $context);
         $data = json_decode($response, true);
 
-        return $data;
+        $page = (int) $page;
+        $hasNextPage =  count(json_decode(file_get_contents("https://api.github.com/users/$name/repos?per_page=$perPage&page=" . $page++, false, $context), true)) > 0;
+
+
+        $return = [
+            'data' => $data,
+            'hasNextPage' => $hasNextPage,
+            'page' => $page
+        ];
+        // var_dump($return);
+        // die();
+        return $return;
     }
 
     public function filter(array $filters, array $data, string $language = ''): ?array
@@ -72,24 +85,29 @@ class MainController
         fclose($file);
     }
 
-    public function json(string $name, array $filters = [], string $language = '')
+    public function json(string $name, array $filters = [], string $language = '', string $page = '1')
     {
         if (is_null($name)) {
             echo "NOME NÂO PODE SER NULO";
             return;
         }
-        $data = $this->request($name);
-        $default_filters = ['name', 'description', 'home_url'];
+        $data = $this->request($name, $page);
+        $default_filters = ['name', 'description', 'language'];
+
 
         if (!empty($filters)) {
             $filters = array_map(function ($string) {
                 return trim($string);
             }, $filters);
-            $data = $this->filter($filters, $data, $language);
+            $data['data'] = $this->filter($filters, $data['data'], $language);
         } else {
-            $data = $this->filter($default_filters, $data, $language);
+            $data['data'] = $this->filter($default_filters, $data['data'], $language);
         }
 
-        return json_encode($data, JSON_PRETTY_PRINT);
+        $res =  json_encode($data, JSON_PRETTY_PRINT);
+
+        return $res;
+        // var_dump($res);
+        // die();
     }
 }
