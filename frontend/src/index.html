@@ -32,17 +32,18 @@
 
                     <div class="flex gap-2">
                         <p>
-                            <button class="bg-amber-500 border-amber-100 text-white px-3.5 py-1.5 rounded"
+                            <button
+                                class="bg-blue-50  border border-blue-500  text-blue-500  px-3.5 py-1.5 rounded"
                                 @click="$store.gitInfo.lastPage()"
-                                x-show="($store.gitInfo.page > 1)">Voltar</button>
-                            <button class="bg-amber-500 border-amber-100 text-white px-3.5 py-1.5 rounded"
+                                x-bind:class="$store.gitInfo.hasNextPage && $store.gitInfo.page > 1 ? 'hover:bg-blue-500 hover:text-blue-50 hover:cursor-pointer' : 'opacity-50'">Voltar</button>
+                            <button class="bg-blue-50  border border-blue-500  text-blue-500  px-3.5 py-1.5 rounded"
                                 @click="$store.gitInfo.nextPage()"
-                                x-show="$store.gitInfo.data.length > 0 && $store.gitInfo.page > 0">Próxima
+                                x-bind:class="$store.gitInfo.hasNextPage ? 'hover:bg-blue-500 hover:text-blue-50 hover:cursor-pointer' : 'opacity-50'">Próxima
                                 página</button>
                         </p>
                         <p
-                            class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset">
-                            Resultados encontrado: <span x-text="$store.gitInfo.data.length"></span></p>
+                            class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium bg-gray-700 text-gray-200 ring-1 ring-gray-600/20 ring-inset" x-bind:class="$store.gitInfo.data.length >= 1 ? 'inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium bg-green-50 text-green-700 ring-1 ring-green-600/20 ring-inset' : 'opacity-50'">
+                            Resultados encontrado: <span x-text="$store.gitInfo.total"></span></p>
                     </div>
                 </div>
 
@@ -75,6 +76,7 @@
                 data: [],
                 hasNextPage: false,
                 page: 1,
+                total: 0,
 
                 fetchRepo() {
                     var user = this.name
