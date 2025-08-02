@@ -1,5 +1,5 @@
 # 🧭 Git Shelf
-*Alpine.js, Tailwind, PHP, APIs*
+*Alpine.js, Tailwind, PHP, APIs, Docker*
 
 
 Este projeto é uma aplicação em duas partes: o frontend e o backend separados.
@@ -21,7 +21,7 @@ O frontend consome a API em PHP enviando o nome de usuário de um perfil do GitH
 - Alpine
 - Tailwind
 - Fetch JavaScript
-
+- Docker 
 ---
 
 ## ✨ Funcionalidades
@@ -35,9 +35,11 @@ O frontend consome a API em PHP enviando o nome de usuário de um perfil do GitH
 
 ## Integrações e Processos
 
-- **GitHub API**: o backend se comunica com a API oficial do GitHub que disponibiliza informações sobre perfis e repositórios públicos.
-- **Comunicação com API própria**: o frontend se comunica com o backend a partir de requisições da API Fetch do ecossistema JavaScript.
-  
+- **GitHub API:** o backend se comunica com a API oficial do GitHub que disponibiliza informações sobre perfis e repositórios públicos.
+- **Comunicação com API própria:** o frontend se comunica com o backend a partir de requisições da API Fetch do ecossistema JavaScript.
+- **Docker:** ambiente de desenvolvimento do backend configurado em Docker e orquestrado com Docker Compose.
+
+
 ---
 
 
