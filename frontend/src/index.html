@@ -4,70 +4,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GIT API</title>
+    <title>Git Shelf</title>
     <link href="./css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body>
-    <main class="w-fulll h-screen flex justify-center items-center">
-        <section class="bg-stone-50 h-3/6 w-10/12  rounded">
+    <header class="bg-stone-900 text-white  flex justify-between items-center px-16 py-6">
+        <p class="text-3xl"><i class="fab fa-github "></i> Git Shelf</p>
+    </header>
 
+    <!-- <main class="w-fulll h-screen flex justify-center "> -->
+    <section class=" min-h-3/6 w-full px-16  rounded ">
+        <div x-data="{}">
 
-            <div class="bg-stone-400  flex justify-between items-center p-5">
-                <span>Github Insights</span>
-                <span>Sobre</span>
-            </div>
-
-
-            <div x-data="{}">
-
-                <div class="flex justify-between  my-5 px-5">
-                    <div class="flex gap-3">
+            <!-- <h2>Status do servidor: <span x-text="$store.gitInfo.server_status"></span></h2> -->
+            <div class="flex justify-between  my-5 px-5">
+                <div class="flex gap-3">
+                    <span class="border border-b-emerald-950 px-3.5 py-1.5 rounded ">
+                        @
                         <input type="text" x-model="$store.gitInfo.name" @keydown.enter="$store.gitInfo.fetchRepo()"
-                            class="border border-b-emerald-950 px-3.5 py-1.5 rounded ">
-                        <button @click="$store.gitInfo.fetchRepo()"
-                            class="bg-green-400 rounded border border-green-800 text-white px-3.5 py-1.5">Procurar</button>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <p>
-                            <button
-                                class="bg-blue-50  border border-blue-500  text-blue-500  px-3.5 py-1.5 rounded"
-                                @click="$store.gitInfo.lastPage()"
-                                x-bind:class="$store.gitInfo.hasNextPage && $store.gitInfo.page > 1 ? 'hover:bg-blue-500 hover:text-blue-50 hover:cursor-pointer' : 'opacity-50'">Voltar</button>
-                            <button class="bg-blue-50  border border-blue-500  text-blue-500  px-3.5 py-1.5 rounded"
-                                @click="$store.gitInfo.nextPage()"
-                                x-bind:class="$store.gitInfo.hasNextPage ? 'hover:bg-blue-500 hover:text-blue-50 hover:cursor-pointer' : 'opacity-50'">Próxima
-                                página</button>
-                        </p>
-                        <p
-                            class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium bg-gray-700 text-gray-200 ring-1 ring-gray-600/20 ring-inset" x-bind:class="$store.gitInfo.data.length >= 1 ? 'inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium bg-green-50 text-green-700 ring-1 ring-green-600/20 ring-inset' : 'opacity-50'">
-                            Resultados encontrado: <span x-text="$store.gitInfo.total"></span></p>
-                    </div>
+                            class="focus:outline-none">
+                    </span>
+                    <button @click="$store.gitInfo.fetchRepo()"
+                        class=" rounded border  px-3.5 py-1.5 bg-green-500  border-green-600  text-white inline-flex items-center gap-1"
+                        x-bind:disabled="$store.gitInfo.name.length === 0"
+                        x-bind:class="$store.gitInfo.name.length > 1 && $store.gitInfo.requestStatus ? 'hover:bg-green-400 cursor-pointer':  'opacity-50'">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Procurar</span>
+                    </button>
+                    <!-- <div x-show="$store.gitInfo.loading"
+                        class=" rounded border  px-3.5 py-1.5 bg-blue-500  border-blue-600  text-white inline-flex items-center gap-1">
+                        <i class="fa-solid fa-eye"></i>Buscando informações...
+                    </div> -->
                 </div>
 
-                <table class="max-w-full bg-white border border-gray-300 rounded-md">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="py-2 px-4 border-b text-left">Repositorio</th>
-                            <th class="py-2 px-4 border-b text-left">Descrição</th>
-                            <th class="py-2 px-4 border-b text-left">Tecnologias</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template x-for="(item) in $store.gitInfo.data">
-                            <tr>
-                                <td class="py-2 px-4 border-b" x-text="item.name"></td>
-                                <td class="py-2 px-4 border-b" x-text="item.description"></td>
-                                <td class="py-2 px-4 border-b" x-text="item.language""></td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
+
+                <div class="flex gap-2">
+                    <p>
+                        <button class="bg-blue-50  border border-blue-500  text-blue-500  px-3.5 py-1.5 rounded"
+                            @click="$store.gitInfo.lastPage()"
+                            x-bind:class="$store.gitInfo.hasNextPage && $store.gitInfo.page > 1 ? 'hover:bg-blue-500 hover:text-blue-50 hover:cursor-pointer' : 'opacity-50'">Voltar</button>
+                        Páginas <span x-text="$store.gitInfo.page"></span> de <span x-text="$store.gitInfo.totalPages"></span>
+                        <button class="bg-blue-50  border border-blue-500  text-blue-500  px-3.5 py-1.5 rounded"
+                            @click="$store.gitInfo.nextPage()"
+                            x-bind:class="$store.gitInfo.hasNextPage ? 'hover:bg-blue-500 hover:text-blue-50 hover:cursor-pointer' : 'opacity-50'"
+                            x-bind:disabled="$store.gitInfo.page === $store.gitInfo.totalPages">Próxima página</button>
+                    </p>
+                    <p class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium bg-gray-700 text-gray-200 ring-1 ring-gray-600/20 ring-inset"
+                        x-bind:class="$store.gitInfo.data.length >= 1 ? 'inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium bg-green-50 text-green-700 ring-1 ring-green-600/20 ring-inset' : 'opacity-50'">
+                        Resultados encontrado: <span x-text="$store.gitInfo.total"></span></p>
+                </div>
             </div>
-        </section>
-    </main>
+            <p x-text="$store.gitInfo.alertMessage"></p>
+
+            <div x-show="!$store.gitInfo.server_status"
+                class="rounded border  px-3.5 py-1.5 bg-red-500  border-red-600  text-white inline-flex items-center gap-1 mx-auto w-lg text-center">
+                <i class="fa-solid fa-circle-exclamation"></i><span>Desculpe, parece que nosso servidor está com
+                    problemas</span>
+            </div>
+
+            <p x-show="$store.gitInfo.data.length !== 0 && $store.server_status === true"
+                class="border-2 p-5 rounded  border-green-400 mx-auto bg-green-500 text-white w-lg ">
+                Para buscar informações sobre o seu perfil, coloque o seu nome de usuário do github na caixa de texto
+                acima !
+            </p>
+            <table class="table-auto mx-auto rounded-md mt-8 w-full" x-show="$store.gitInfo.data.length != 1">
+                <thead class="shadow-none outline-none">
+                    <tr class="">
+                        <th class="py-2 px-4 border-b border-b-gray-300 text-left font-light text-2xl  w-60">Repositorio
+                        </th>
+                        <th class="py-2 px-4 border-b border-b-gray-300 text-left font-light text-2xl">Descrição</th>
+                        <th class="py-2 px-4 border-b border-b-gray-300 text-left font-light text-2xl">Tecnologias</th>
+                    </tr>
+                </thead>
+                <tbody x-show="$store.gitInfo.loading">
+                    <tr class="h-24 overflow-scroll">
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">Buscando informações</td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">Sabia que nosso backend é apenas em PHP ?</td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light"></td>
+                    </tr>
+                </tbody>
+                <tbody x-show="!$store.gitInfo.loading">
+                    <!--    <tr class="h-24 overflow-scroll ">
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light w-60">Github Insights</td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">Plataforma que integra api do gtihub </td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">PHP</td>
+                    </tr>
+                    <tr class="h-24 overflow-scroll ">
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light w-60">Github Insights</td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">Plataforma que integra api do gtihub </td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">PHP</td>
+                    </tr> -->
+
+                    <template x-for="(item) in $store.gitInfo.data">
+                        <tr class="h-14 overflow-scroll ">
+                            <td class="py-2 px-4 border-b border-b-gray-300 font-light" x-text="item.name"></td>
+                            <td class="py-2 px-4 border-b border-b-gray-300 font-light" x-text="item.description"></td>
+                            <td class="py-2 px-4 border-b border-b-gray-300 font-light" x-text="item.language"></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <!-- </main> -->
 
     <script>
         document.addEventListener('alpine:init', () => {
@@ -77,24 +119,48 @@
                 hasNextPage: false,
                 page: 1,
                 total: 0,
+                loading: false,
+                server_status: true,
+                alert: false,
+                alertMessage: '',
+
+                requestStatus: true,
+
+                totalPages: 0,
 
                 fetchRepo() {
+                    if (this.requestStatus == false) {
+                        console.log('Voce ainda nao pode fazer requisicoes')
+                        return
+                    }
+                    this.requestStatus = false
                     var user = this.name
+                    if (this.page != 0 && this.page == this.totalPages) {
+                        console.log('não ha mais páginas para ver')
+                        return
+                    }
                     if (!user) {
                         console.log('nome vazio ou inválido')
+                        this.alert = true
+                        this.alertMessage = 'Preencha o campo acima para realizar a consulta'
                         return
                     }
                     console.log(`Buscando informações de ${user}`);
-
+                    this.loading = true
+                    this.alert = false
+                    this.alertMessage = ''
 
                     const url = `http://localhost:8080/?name=${encodeURI(user)}&action=json&page=${this.page}`;
                     console.log(url)
+
                     try {
                         fetch(url)
                             .then(response => response.json())
                             .then(data => {
+                                this.server_status = true
                                 this.data = data.data
                                 this.total = data.total_repositories
+                                this.totalPages = Math.ceil(data.total_repositories / 5)
                                 console.log(data)
                                 if (data.hasNextPage) {
                                     this.hasNextPage = true
@@ -103,11 +169,22 @@
                                     this.hasNextPage = false
                                     console.log('nao tem proxima pagina')
                                 }
+
+                                this.loading = false
+                                this.requestStatus = true
+
+                            })
+                            .catch(err => {
+                                console.log('Ocorreu um erro' + err.message)
+                                this.server_status = false
+                                this.loading = false
+                                this.requestStatus = true
+
                             })
 
 
                     } catch (err) {
-                        console.log(err);
+                        console.log(err)
                     }
                 },
 
@@ -124,11 +201,13 @@
                 },
 
                 lastPage() {
+
                     if (this.page > 1) {
                         this.page--;
                         console.log('Voltando busca para a página: ' + this.page)
                         const url = `http://localhost:8080/?name=${encodeURI(this.name)}&action=json&page=${this.page}`;
                         console.log(url)
+                        this.requestStatus = true
                         this.fetchRepo();
                     }
                 }
