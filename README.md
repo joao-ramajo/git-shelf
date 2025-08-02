@@ -13,6 +13,7 @@ O Alpine.js foi escolhido por fornecer interatividade e reatividade em tempo de 
 Tailwind foi escolhido para estilização por permitir um fluxo de desenvolvimento contínuo sem a necessidade de grande atenção a dezenas de arquivos CSS.
 
 O frontend consome a API em PHP enviando o nome de usuário de um perfil do GitHub e recebe de volta um conjunto de informações do perfil e apresenta ao usuário.
+
 ---
 
 ## 💻 Tecnologias Utilizadas
