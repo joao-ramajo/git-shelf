@@ -1,17 +1,10 @@
 <?php
 
-require_once dirname(__DIR__, 1) . '/vendor/autoload.php';
+require_once dirname(__DIR__, 1) . '/config/bootstrap.php';
 
-use Api\Controllers\HttpController;
 use Api\Controllers\MainController;
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable(dirname(__DIR__, 1));
-$dotenv->load();
-
 
 $controller = new MainController();
-
 
 $name = isset($_GET['name']) ? $_GET['name'] : '';
 $action = isset($_GET['action']) ? $_GET['action'] : '';
@@ -19,7 +12,6 @@ $filters = isset($_GET['filters']) ? $_GET['filters'] : '';
 $language = isset($_GET['language']) ? $_GET['language'] : '';
 $page = isset($_GET['page']) ? $_GET['page'] : '';
 
-HttpController::headers();
 
 function convertToArray(string $filters)
 {
@@ -31,7 +23,7 @@ function convertToArray(string $filters)
     return $arr;
 }
 
-converttoArray($filters);
+convertToArray($filters);
 
 switch ($action) {
     case 'json':
@@ -41,6 +33,7 @@ switch ($action) {
         echo "";
         break;
 }
+
 
 
 // name	Nome do repositório
