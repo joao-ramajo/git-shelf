@@ -3,31 +3,15 @@
 require_once dirname(__DIR__, 1) . '/config/bootstrap.php';
 
 use Api\Controllers\MainController;
+use Api\Http\Request;
 
+$request = new Request($_GET);
 $controller = new MainController();
 
-$name = isset($_GET['name']) ? $_GET['name'] : '';
-$action = isset($_GET['action']) ? $_GET['action'] : '';
-$filters = isset($_GET['filters']) ? $_GET['filters'] : '';
-$language = isset($_GET['language']) ? $_GET['language'] : '';
-$page = isset($_GET['page']) ? $_GET['page'] : '';
 
-
-function convertToArray(string $filters)
-{
-    if (empty($filters)) {
-        return [];
-    }
-    $arr = explode(',', $filters);
-
-    return $arr;
-}
-
-convertToArray($filters);
-
-switch ($action) {
+switch ($request->action) {
     case 'json':
-        echo $controller->json($name, convertToArray($filters), $language, $page);
+        echo $controller->json($request->name);
         break;
     default:
         echo "";

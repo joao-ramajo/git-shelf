@@ -1,5 +1,5 @@
 {
-    "name": "joaor/git-api",
+    "name": "joaor/git-shelf",
     "autoload": {
         "psr-4": {
             "Api\\": "Api/"
@@ -7,7 +7,7 @@
     },
     "authors": [
         {
-            "name": "LacamJC",
+            "name": "joao-ramajo",
             "email": "joaoramajo744@gmail.com"
         }
     ],
