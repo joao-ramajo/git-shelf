@@ -2,8 +2,6 @@
 
 namespace Api\Controllers;
 
-use HashContext;
-
 class MainController
 {
     public function request(string $name, string $page): ?array

@@ -14,7 +14,8 @@ switch ($request->action) {
         echo $controller->json($request->name);
         break;
     default:
-        echo "";
+        header('Content-Type: application/json', true, 404);
+        echo json_encode(['error' => 'Ação não encontrada']);
         break;
 }
 
