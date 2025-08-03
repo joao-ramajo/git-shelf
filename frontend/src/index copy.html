@@ -12,40 +12,32 @@
 
 <body>
     <header class="bg-stone-900 text-white  flex justify-between items-center px-16 py-6">
-        <p class="text-3xl"><i class="fab fa-github "></i>Git Shelf</p>
+        <p class="text-3xl"><i class="fab fa-github "></i> Git Shelf</p>
     </header>
 
-    <section class="min-h-3/6 w-full px-16 rounded">
-        <div x-data="{
-            repositories: [],
-            name: '',
-            isLoading: false,
-            get disabled() { return this.name === '' || this.isLoading },
-            getRepositories: async function() {
-                this.isLoading = true;
-                this.repositories = await(await fetch('http://localhost:8080/?name=joao-ramajo&action=json')).json();
-                this.isLoading = false;
-            }
-         }">
-            <div class="flex justify-between my-5 px-5">
+    <!-- <main class="w-fulll h-screen flex justify-center "> -->
+    <section class=" min-h-3/6 w-full px-16  rounded ">
+        <div x-data="{}">
+
+            <!-- <h2>Status do servidor: <span x-text="$store.gitInfo.server_status"></span></h2> -->
+            <div class="flex justify-between  my-5 px-5">
                 <div class="flex gap-3">
-                    <span class="border border-b-emerald-950 px-3.5 py-1.5 rounded">
+                    <span class="border border-b-emerald-950 px-3.5 py-1.5 rounded ">
                         @
-                        <input type="text" x-model="name" @keydown.enter="$store.gitInfo.fetchRepo()"
+                        <input type="text" x-model="$store.gitInfo.name" @keydown.enter="$store.gitInfo.fetchRepo()"
                             class="focus:outline-none">
                     </span>
-                    <pre>
-                        <div x-text="JSON.stringify($data, null, 2)"></div>
-                    </pre>
-                    <button
-                        @click="getRepositories()"
-                        class="rounded border px-3.5 py-1.5 bg-green-500 border-green-600 text-white inline-flex items-center gap-1 disabled:opacity-50"
-                        x-bind:disabled="disabled"
-                        >
+                    <button @click="$store.gitInfo.fetchRepo()"
+                        class=" rounded border  px-3.5 py-1.5 bg-green-500  border-green-600  text-white inline-flex items-center gap-1"
+                        x-bind:disabled="$store.gitInfo.name.length === 0"
+                        x-bind:class="$store.gitInfo.name.length > 1 && $store.gitInfo.requestStatus ? 'hover:bg-green-400 cursor-pointer':  'opacity-50'">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span>Procurar</span>
                     </button>
-
+                    <!-- <div x-show="$store.gitInfo.loading"
+                        class=" rounded border  px-3.5 py-1.5 bg-blue-500  border-blue-600  text-white inline-flex items-center gap-1">
+                        <i class="fa-solid fa-eye"></i>Buscando informações...
+                    </div> -->
                 </div>
 
 
@@ -95,9 +87,18 @@
                     </tr>
                 </tbody>
                 <tbody x-show="!$store.gitInfo.loading">
+                    <!--    <tr class="h-24 overflow-scroll ">
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light w-60">Github Insights</td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">Plataforma que integra api do gtihub </td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">PHP</td>
+                    </tr>
+                    <tr class="h-24 overflow-scroll ">
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light w-60">Github Insights</td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">Plataforma que integra api do gtihub </td>
+                        <td class="py-2 px-4 border-b border-b-gray-300 font-light">PHP</td>
+                    </tr> -->
 
-
-                    <template x-for="(item) in repositories.data">
+                    <template x-for="(item) in $store.gitInfo.data">
                         <tr class="h-14 overflow-scroll ">
                             <td class="py-2 px-4 border-b border-b-gray-300 font-light" x-text="item.name"></td>
                             <td class="py-2 px-4 border-b border-b-gray-300 font-light" x-text="item.description"></td>
@@ -108,7 +109,7 @@
             </table>
         </div>
     </section>
-
+    <!-- </main> -->
 
     <script>
         document.addEventListener('alpine:init', () => {
