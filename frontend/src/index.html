@@ -30,8 +30,13 @@
                     console.log('nome vazio')
                     return
                 }
+                if(this.isLoading){
+                    return
+                }
                 this.isLoading = true;
+                console.log('buscando informações')
                 var result = await(await fetch(`http://localhost:8080/?name=${encodeURI(this.name)}&action=json`)).json();
+                this.data = []
                 this.repositories = result
                 var perPage = 5
                 for(let i = 0; i < result.data.length; i += perPage)
