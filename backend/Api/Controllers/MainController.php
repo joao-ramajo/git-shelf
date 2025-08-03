@@ -9,7 +9,7 @@ class MainController
         $token = $_ENV['GITHUB_TOKEN'];
         $appName = $_ENV['APP_NAME'];
 
-        $perPage = 5;
+        $perPage = 100;
 
         $options = [
             'http' => [

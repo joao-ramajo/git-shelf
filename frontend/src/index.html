@@ -22,8 +22,8 @@
             name: '',
             page: 0,
             isLoading: false,
+            get hasLastPage() {return this.page === 0},
             get hasNextPage() {return this.page + 1 < this.data.length},
-            hasLastPage: '',
             get disabled() { return this.name === '' || this.isLoading },
             getRepositories: async function() {
                 if(!this.name){
@@ -32,12 +32,11 @@
                 }
                 this.isLoading = true;
                 var result = await(await fetch(`http://localhost:8080/?name=${encodeURI(this.name)}&action=json`)).json();
-                // [[5],[5],[5]]
                 this.repositories = result
-                var limit = 2
-                for(let i = 0; i < result.data.length; i += limit)
+                var perPage = 5
+                for(let i = 0; i < result.data.length; i += perPage)
                 {
-                    this.data.push(result.data.slice(i, i + limit))
+                    this.data.push(result.data.slice(i, i + perPage))
                 }
                 console.log(this.data)
                 this.isLoading = false;
@@ -60,7 +59,7 @@
                     <p>
                         <button
                             class="bg-blue-50  border border-blue-500  enabled:hover:cursor-pointer  text-blue-500 disabled:opacity-50  px-3.5 py-1.5 rounded"
-                            @click="page--" x-bind:disabled="page === 0">Voltar</button>
+                            @click="page--" x-bind:disabled="hasLastPage">Voltar</button>
                         Páginas <span x-text="page + 1"></span> de <span x-text="data.length === 0  ? '1' : data.length"></span>
                         <button
                             class="bg-blue-50  border border-blue-500  text-blue-500 disabled:opacity-50 enabled:hover:cursor-pointer   px-3.5 py-1.5 rounded"
