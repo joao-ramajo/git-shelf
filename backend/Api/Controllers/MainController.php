@@ -4,9 +4,16 @@ namespace Api\Controllers;
 
 class MainController
 {
-    public function index(){
-        echo "home teste";
+    public function index()
+    {
+        $data = [
+            'message' => 'Git Shelf API',
+            'author' => 'João ramajo',
+            'linkedin' => 'https://linkedin.com/in/joao-ramajo'
+        ];
+        echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
+
     public function request(string $name, string $page): ?array
     {
         $token = $_ENV['GITHUB_TOKEN'];
@@ -20,15 +27,14 @@ class MainController
                 'header' => "User-Agent: $appName\r\nAuthorization: token $token\r\n"
             ]
         ];
+
         $context = stream_context_create($options);
         $response = file_get_contents("https://api.github.com/users/$name/repos?per_page=$perPage&page=$page", false, $context);
         $total = count(json_decode(file_get_contents("https://api.github.com/users/$name/repos?per_page=200", false, $context), true));
         $data = json_decode($response, true);
 
         $page = (int) $page;
-        $hasNextPage =  count(json_decode(file_get_contents("https://api.github.com/users/$name/repos?per_page=$perPage&page=" . $page++, false, $context), true)) > 0;
-
-
+        $hasNextPage = count(json_decode(file_get_contents("https://api.github.com/users/$name/repos?per_page=$perPage&page=" . $page++, false, $context), true)) > 0;
 
         $return = [
             'data' => $data,
@@ -41,10 +47,10 @@ class MainController
 
     public function filter(array $filters, array $data, string $language = ''): ?array
     {
-
         if (empty($filters) || is_null($data)) {
             return null;
         }
+
         $labels = $filters;
         $content = [];
 

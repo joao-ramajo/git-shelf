@@ -19,12 +19,14 @@
         <div x-data="{
             repositories: [],
             data: [],
+            languages: new Set(),
             name: '',
             page: 0,
             isLoading: false,
             get hasLastPage() { return this.page === 0; },
-            get hasNextPage() {return this.page + 1 < this.data.length; },
+            get hasNextPage() { return this.page + 1 < this.data.length; },
             get disabled() { return this.name === '' || this.isLoading; },
+            get hasLanguages() { return this.languages.size != 0 },
             getRepositories: async function() {
                 if(!this.name || this.isLoading) {
                     return;
@@ -44,10 +46,17 @@
                     for(let i = 0; i < result.data.length; i += perPage) {
                         this.data.push(result.data.slice(i, i + perPage));
                     }
+                    result.data.forEach(repo => {
+                        if(repo.language){
+                            this.languages.add(repo.language);
+                        }
+                    });
+                    this.languages = new Set(this.languages);
                     this.isLoading = false;
                 } catch(err) {
                     console.error(err.message);
                     alert('Erro de conexão');
+                    this.isLoading = false;
                     return;
                 }
             }
@@ -107,8 +116,11 @@
                         <td class="py-2 px-4 border-b border-b-gray-300 font-light"></td>
                     </tr>
                 </tbody>
+                <pre>
+                    <div x-text="console.log(($data))"></div>
+                </pre>
                 <tbody x-show="!isLoading">
-                    <template x-for="(item) in data[page]">
+                    <template x-for=" (item) in data[page]">
                         <tr class="h-14 overflow-scroll ">
                             <td class="py-2 px-4 border-b border-b-gray-300 font-light" x-text="item.name"></td>
                             <td class="py-2 px-4 border-b border-b-gray-300 font-light" x-text="item.description"></td>

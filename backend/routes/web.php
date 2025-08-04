@@ -6,7 +6,7 @@ use Api\Http\Router;
 
 $router = new Router();
 
-$router->get('home', 'MainController@index');
+$router->get('/', 'MainController@index');
 $router->get('git/{name}', 'MainController@json');
 
 return $router;
