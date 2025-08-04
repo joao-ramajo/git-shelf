@@ -26,31 +26,28 @@
             get hasNextPage() {return this.page + 1 < this.data.length; },
             get disabled() { return this.name === '' || this.isLoading; },
             getRepositories: async function() {
-                if(!this.name || this.isLoading)
-                {
+                if(!this.name || this.isLoading) {
                     return;
                 }
+
                 this.isLoading = true;
-                try
-                {
-                    var response = await fetch(`http://localhost:8080/?name=${encodeURI(this.name)}&action=json`);
-                    if(!response.ok)
-                    {
+
+                try {
+                    var response = await fetch(`http://localhost:8080/git/${encodeURI(this.name)}`);
+                    if(!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status} ${response.statusText}`);
                     }
                     var result = await response.json();
                     this.data = [];
                     this.repositories = result;
                     var perPage = 5;
-                    for(let i = 0; i < result.data.length; i += perPage)
-                    {
+                    for(let i = 0; i < result.data.length; i += perPage) {
                         this.data.push(result.data.slice(i, i + perPage));
                     }
                     this.isLoading = false;
-                }
-                catch(err)
-                {
+                } catch(err) {
                     console.error(err.message);
+                    alert('Erro de conexão');
                     return;
                 }
             }
@@ -72,31 +69,23 @@
                     <p>
                         <button
                             class="bg-blue-50 border border-blue-500 enabled:hover:cursor-pointe text-blue-500 disabled:opacity-50 px-3.5 py-1.5 rounded"
-                            @click="page--"
-                            x-bind:disabled="hasLastPage"
-                        >
+                            @click="page--" x-bind:disabled="hasLastPage">
                             Voltar
                         </button>
                         Páginas
-                        <span
-                            x-text="page + 1"></span> de
-                        <span
-                            x-text="data.length === 0  ? '1' : data.length"></span>
+                        <span x-text="page + 1"></span> de
+                        <span x-text="data.length === 0  ? '1' : data.length"></span>
                         <button
                             class="bg-blue-50 border border-blue-500 text-blue-500 disabled:opacity-50 enabled:hover:cursor-pointer   px-3.5 py-1.5 rounded"
-                            @click="page++"
-                            x-bind:disabled="!hasNextPage"
-                        >
+                            @click="page++" x-bind:disabled="!hasNextPage">
                             Próxima página
                         </button>
                     </p>
-                    <p
-                        class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium bg-gray-700 text-gray-200 ring-1 ring-gray-600/20 ring-inset"
+                    <p class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium bg-gray-700 text-gray-200 ring-1 ring-gray-600/20 ring-inset"
                         x-bind:class="data.length >= 1 ? 'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium bg-green-50 text-green-700 ring-1 ring-green-600/20 ring-inset' : 'opacity-50'
                     ">
                         Resultados encontrado:
-                        <span
-                            x-text="repositories.total_repositories ? repositories.total_repositories : '0'
+                        <span x-text="repositories.total_repositories ? repositories.total_repositories : '0'
                         "></span>
                     </p>
                 </div>

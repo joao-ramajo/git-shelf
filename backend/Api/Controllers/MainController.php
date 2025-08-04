@@ -87,15 +87,19 @@ class MainController
         fclose($file);
     }
 
-    public function json(string $name, array $filters = [], string $language = '', string $page = '1')
+    public function json(array $params = [])
     {
+        $name = $params['name'];
+        $filters = [];
+        $language = '';
+        $page = '';
+
         if (is_null($name)) {
             echo "NOME NÂO PODE SER NULO";
             return;
         }
         $data = $this->request($name, $page);
         $default_filters = ['name', 'description', 'language'];
-
 
         if (!empty($filters)) {
             $filters = array_map(function ($string) {
@@ -108,8 +112,6 @@ class MainController
 
         $res =  json_encode($data, JSON_PRETTY_PRINT);
 
-        return $res;
-        // var_dump($res);
-        // die();
+        echo $res;
     }
 }
