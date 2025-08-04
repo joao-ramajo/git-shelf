@@ -4,6 +4,9 @@ namespace Api\Controllers;
 
 class MainController
 {
+    public function index(){
+        echo "home teste";
+    }
     public function request(string $name, string $page): ?array
     {
         $token = $_ENV['GITHUB_TOKEN'];
@@ -33,7 +36,6 @@ class MainController
             'page' => $page,
             'total_repositories' => $total
         ];
-     
         return $return;
     }
 

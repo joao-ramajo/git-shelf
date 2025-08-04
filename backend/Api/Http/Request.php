@@ -8,13 +8,14 @@ class Request
 
     public function __construct(array $query)
     {
-        foreach($query as $key => $value){
+        foreach ($query as $key => $value) {
             $query[$key] = htmlspecialchars($value,  ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         }
         $this->query = $query;
     }
 
-    public function __get($key){
+    public function __get($key)
+    {
         return $this->query[$key];
     }
 

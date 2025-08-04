@@ -1,23 +1,11 @@
 <?php
 
 require_once dirname(__DIR__, 1) . '/config/bootstrap.php';
-
-use Api\Controllers\MainController;
-use Api\Http\Request;
-
-$request = new Request($_GET);
-$controller = new MainController();
+require_once dirname(__DIR__, 1) . '/routes/web.php';
 
 
-switch ($request->action) {
-    case 'json':
-        echo $controller->json($request->name);
-        break;
-    default:
-        header('Content-Type: application/json', true, 404);
-        echo json_encode(['error' => 'Ação não encontrada']);
-        break;
-}
+$router->dispatch();
+
 
 
 
